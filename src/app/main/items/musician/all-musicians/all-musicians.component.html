@@ -1,0 +1,286 @@
+<div class="panel-header panel-header-sm"></div>
+<div class="container m-2">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2 style="font-family: 'Anton', sans-serif">
+        Musicians On This System
+      </h2>
+    </div>
+
+    <div class="col-sm-4">
+      <mat-form-field>
+        <mat-label>
+          Search By Name
+        </mat-label>
+        <input type="text" name="searchTerm" placeholder="Search For Musician"
+               matInput [(ngModel)]="searchTerm">
+      </mat-form-field>
+    </div>
+    <div class="col-sm-4">
+      <button (click)="helperService.openDialog(newMusicianTemplate)" mat-raised-button color="accent" style="width: auto">
+        New Musician &nbsp;
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <h3 class="text-center" style="font-family: 'Anton', sans-serif">
+      Filter Musicians By Your Choice
+    </h3>
+  </div>
+
+  <div class="container">
+    <form>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Musician Type</mat-label>
+          <mat-select name="type" [(ngModel)]="musicianFilter.type">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let type of musicianData.artistTypes" [value]="type">
+              {{type}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Nationality</mat-label>
+          <input type="text" name="nationality" [(ngModel)]="musicianFilter.nationality"
+                 matInput>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center" *ngIf="!isBand(musicianFilter)">
+        <mat-form-field>
+          <mat-label>Gender</mat-label>
+          <mat-select name="gender" [(ngModel)]="musicianFilter.gender">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let gender of musicianData.genderTypes" [value]="gender">
+              {{gender}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <button (click)="getFilteredMusicians()"
+                mat-raised-button color="warn" style="width: 120px">
+          Filter
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="row mt-2 mb-2" *ngIf="musicians">
+    <div class="col-md-4 mt-1 mb-1" *ngFor="let musician of musicians | musicianFilter: searchTerm">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title text-center" style="font-family: 'Anton', sans-serif">
+            {{musician.name}}
+          </h3>
+          <div class="row-justify-content-center m-1">
+            <h5 *ngIf="musician.musicianAlbums" class="text-center"
+                style="font-family: 'Anton', sans-serif">
+              #Albums: {{musician.musicianAlbums.length}}
+            </h5>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="d-flex mt-1 justify-content-center">
+            <button (click)="viewMusicianDetails(musician)" mat-raised-button
+                    color="primary">
+              Musician Details
+            </button>
+            <button class="ml-2" (click)="prepareUpdateForm(musician);
+            helperService.openDialog(updateMusicianTemplate)" mat-raised-button
+                    color="primary">
+              Edit
+            </button>
+
+            <ng-template #updateMusicianTemplate>
+              <h2 mat-dialog-title>
+                Update Musician {{musician.name}}
+              </h2>
+              <mat-dialog-content class="mat-typography" style="width: 700px; height: auto">
+                <form [formGroup]="updateMusicianDto" (ngSubmit)="updateMusician(musician.id)" novalidate>
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Name</mat-label>
+                    <input type="text" matInput placeholder="Singer Name.."
+                           formControlName="name" name="name">
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Information</mat-label>
+                    <input type="text" matInput placeholder="Singer Information.."
+                           formControlName="info" name="info">
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Type</mat-label>
+                    <mat-select name="type" formControlName="type">
+                      <mat-option>None</mat-option>
+                      <mat-option *ngFor="let type of musicianData.artistTypes" [value]="type">
+                        {{type}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" *ngIf="!isBand(updateMusicianDto.value)">
+                    <mat-label>Gender</mat-label>
+                    <mat-select name="gender" formControlName="gender">
+                      <mat-option>None</mat-option>
+                      <mat-option *ngFor="let gender of musicianData.genderTypes" [value]="gender">
+                        {{gender}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="form-group">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="updateImage"
+                             formControlName="image" ng2FileSelect [uploader]="uploader"
+                             (change)="onMusicianImageSelect($event)">
+                      <label for="updateImage" class="custom-file-label">
+                        You have chosen: {{selectedImage}}
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" style="width: 120px"
+                          class="btn btn-outline-success"
+                          [disabled]="!updateMusicianDto.valid">
+                    Update
+                  </button>
+                  <div class="row justify-content-center mt-1 mb-1" *ngIf="viewProgressBar">
+                    <div class="col-md-10">
+                      <p class="lead text-center">
+                        Please Wait
+                      </p>
+                      <mat-progress-bar class="mt-1 mb-1"
+                                        mode="indeterminate"></mat-progress-bar>
+                    </div>
+                  </div>
+                </form>
+              </mat-dialog-content>
+              <mat-dialog-actions align="end">
+                <button style="width: 120px"
+                        (click)="helperService.hideDialog()"
+                        class="btn btn-outline-danger pull-right"
+                >
+                  Close
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+
+
+            <button (click)="helperService.openDialog(deleteMusicianTemplate)" mat-raised-button
+                    class="ml-2" color="warn">
+              Delete
+            </button>
+
+            <ng-template #deleteMusicianTemplate>
+              <h2 mat-dialog-title>
+                Deleting Musician:  {{musician.name}}
+              </h2>
+              <mat-dialog-content class="mat-typography" style="width: 350px; height: auto">
+                <p class="alert alert-danger">
+                  Are you sure that you want do delete this musician??
+                </p>
+              </mat-dialog-content>
+              <mat-dialog-actions align="end">
+                <button style="width: 120px"
+                        (click)="deleteMusician(musician.id)"
+                        class="btn btn-outline-danger pull-right"
+                >
+                  Yes
+                </button>
+                <button style="width: 120px"
+                        (click)="helperService.hideDialog()"
+                        class="btn btn-outline-warning pull-right"
+                >
+                  No
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-1 mb-2 justify-content-center"
+     *ngIf="musicians && (limit >= musicians.length)">
+  <button nbButton [nbSpinner]="loading" nbSpinnerStatus="danger"
+          (click)="loadLimitedMusicians()" style="width: 150px">
+    Load More &nbsp; &nbsp;
+    <i class="fas fa-sync-alt"></i>
+  </button>
+</div>
+
+
+<!-- Create Musician Template-->
+<ng-template #newMusicianTemplate>
+  <h2 mat-dialog-title>
+    New Musician On System
+  </h2>
+  <mat-dialog-content class="mat-typography" style="width: 700px; height: auto">
+    <form [formGroup]="newMusicianDto" (ngSubmit)="newMusician()" novalidate>
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput placeholder="Singer Name.."
+               formControlName="name" name="name" required>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Information</mat-label>
+        <input type="text" matInput placeholder="Singer Information.."
+               formControlName="info" name="info" required>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Type</mat-label>
+        <mat-select name="type" formControlName="type">
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let type of musicianData.artistTypes" [value]="type">
+            {{type}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width" *ngIf="!isBand(newMusicianDto.value)">
+        <mat-label>Gender</mat-label>
+        <mat-select name="gender" formControlName="gender">
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let gender of musicianData.genderTypes" [value]="gender">
+            {{gender}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="form-group">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="image"
+                 formControlName="image" ng2FileSelect [uploader]="uploader" required
+                 (change)="onMusicianImageSelect($event)">
+          <label for="image" class="custom-file-label">
+            You have chosen: {{selectedImage}}
+          </label>
+        </div>
+      </div>
+      <button type="submit" style="width: 120px"
+              class="btn btn-outline-success"
+              [disabled]="!newMusicianDto.valid">
+        Create
+      </button>
+      <div class="row justify-content-center mt-1 mb-1" *ngIf="viewProgressBar">
+        <div class="col-md-10">
+          <p class="lead text-center">
+            Please Wait
+          </p>
+          <mat-progress-bar class="mt-1 mb-1"
+                            mode="indeterminate"></mat-progress-bar>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button style="width: 120px"
+            (click)="helperService.hideDialog()"
+            class="btn btn-outline-danger pull-right"
+    >
+      Close
+    </button>
+  </mat-dialog-actions>
+</ng-template>

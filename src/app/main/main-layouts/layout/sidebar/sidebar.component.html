@@ -1,0 +1,44 @@
+<div class="logo">
+  <a routerLink="/" class="simple-text logo-mini">
+    <div class="logo-img">
+      <img src="../../../../../assets/img/music-logo.jpg" alt=""/>
+    </div>
+  </a>
+  <a routerLink="/" class="simple-text ml-2 logo-normal">
+    Music Land
+  </a>
+</div>
+<div class="sidebar-wrapper">
+  <ul class="nav" *ngIf="!authService.isLoggedIn()">
+    <li routerLinkActive="active" class="nav-item">
+      <a class="nav-link text-center" routerLink="/auth/login">
+        <h4 style="font-family: 'Anton', sans-serif">
+          Login
+        </h4>
+      </a>
+    </li>
+    <li routerLinkActive="active" class="nav-item">
+      <a class="nav-link text-center" routerLink="/auth/login">
+        <h4 style="font-family: 'Anton', sans-serif">
+          FAQ
+        </h4>
+      </a>
+    </li>
+    <li routerLinkActive="active" class="nav-item">
+      <a class="nav-link text-center" routerLink="/auth/login">
+        <h4 style="font-family: 'Anton', sans-serif">
+          Helpful Information
+        </h4>
+      </a>
+    </li>
+  </ul>
+
+  <ul class="nav" *ngIf="authService.isLoggedIn()">
+    <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+      <a [routerLink]="[menuItem.path]">
+        <i [class]="menuItem.icon"></i>
+        <p>{{menuItem.title}}</p>
+      </a>
+    </li>
+  </ul>
+</div>

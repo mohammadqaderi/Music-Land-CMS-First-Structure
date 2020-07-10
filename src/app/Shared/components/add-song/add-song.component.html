@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>
+  New Song
+</h2>
+<mat-dialog-content class="mat-typography" style="width: 700px; height: auto">
+
+  <form [formGroup]="newSongDto"
+        (ngSubmit)="createNewSong(); viewProgressBar = !viewProgressBar" novalidate>
+    <mat-form-field class="example-full-width">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name of Song" type="text" formControlName="name" name="name"
+             required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Description of Song" type="text" formControlName="description"
+             name="description" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Artist</mat-label>
+      <input matInput placeholder="Artist Name" type="text" formControlName="artist"
+             name="artist" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Type</mat-label>
+      <mat-select name="type" formControlName="type" required>
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let type of songData.songTypes" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Language</mat-label>
+      <mat-select name="language" formControlName="language" required>
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let language of songData.songLanguages" [value]="language">
+          {{language}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="form-group">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="source" formControlName="source" name="source"
+               ng2FileSelect
+               [uploader]="uploader" (change)="onSourceSelect($event)" required>
+        <label class="custom-file-label" for="source">You have chosen: {{selectedSong}}</label>
+      </div>
+    </div>
+
+    <button [disabled]="!newSongDto.valid" style="width: 120px;" mat-raised-button color="primary" type="submit">Create
+    </button>
+    <div class="row justify-content-center mt-1 mb-1" *ngIf="viewProgressBar">
+      <div class="col-md-10">
+        <p class="lead text-center">
+          Please Wait
+        </p>
+        <mat-progress-bar class="mt-1 mb-1" mode="indeterminate"></mat-progress-bar>
+      </div>
+    </div>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" style="width: 120px;" (click)="helperService.hideDialog()" type="button">
+    Close
+  </button>
+</mat-dialog-actions>

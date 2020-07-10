@@ -1,0 +1,208 @@
+<div class="panel-header panel-header-sm">
+</div>
+
+<div class="container-fluid m-2" *ngIf="singer">
+
+  <div class="row m-2 justify-content-between bg-primary" style="border-radius: 7px;">
+    <div class="col-md-4">
+      <h2 style="font-family: 'Anton', sans-serif" class="text-center">Singer ID: {{singer.id}}</h2>
+    </div>
+    <div class="col-md-4">
+      <h2 style="font-family: 'Anton', sans-serif" class="text-center">Singer Name: {{singer.name}}</h2>
+    </div>
+  </div>
+
+  <div class="row m-2 justify-content-between bg-primary" style="border-radius: 7px;">
+    <div class="col-md-4">
+      <h2 style="font-family: 'Anton', sans-serif" class="text-center">Albums Count: {{singer.singerAlbums.length}}</h2>
+    </div>
+    <div class="col-md-4">
+      <h2 style="font-family: 'Anton', sans-serif" class="text-center">Singer Type: {{singer.type}}</h2>
+    </div>
+  </div>
+
+  <div class="row justify-content-center m-2 bg-primary" style="border-radius: 7px;">
+    <div class="row justify-content-between">
+      <div class="col-md-6">
+        <h2 style="font-family: 'Anton', sans-serif" class="text-center">Singer Albums</h2>
+      </div>
+      <div class="col-md-6">
+        <button (click)="helperService.openDialog(createAlbumTemplate)" mat-raised-button color="accent" style="width: auto">
+          New Album &nbsp;
+          <mat-icon> add_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <ng-template #createAlbumTemplate>
+    <h2 mat-dialog-title>
+      New Album
+    </h2>
+    <mat-dialog-content class="mat-typography" style="width: 400px; height: auto">
+      <form>
+        <mat-form-field class="example-full-width">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name of Artist" type="text"
+                 [(ngModel)]="createAlbumDto.name" name="name"
+          >
+        </mat-form-field>
+
+        <button class="pull-left float-right" style="width: 120px;"
+                (click)="createSingerAlbum(); helperService.hideDialog();"
+                mat-raised-button color="primary" type="button">Create
+        </button>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="warn" style="width: 120px;" (click)="helperService.hideDialog();" type="button">
+        Close
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+
+
+  <div class="row mt-2 mb-1 ">
+    <div class="col-md-6" *ngFor="let album of singer.singerAlbums; let i = index">
+      <div class="card scroll">
+        <div class="card-header">
+          <div class="row justify-content-between">
+            <div class="col-md-4">
+              <p>Number: {{i + 1}}</p>
+            </div>
+            <div class="col-md-4">
+              <p>Name: {{album.name}}</p>
+            </div>
+            <div class="col-md-4">
+              <p>Songs Count: {{album.songs.length}}</p>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="row mt-1 mb-1 justify-content-end">
+            <button (click)="helperService.openDialog(newSongTemplate)" mat-raised-button color="accent" style="width: auto">
+              New Song &nbsp;
+              <mat-icon> add_circle</mat-icon>
+            </button>
+            <ng-template #newSongTemplate>
+              <app-add-song [albumId]="album.id" [startRefresh]="startRefresh"
+                            (change)="refreshAlbum({albumId: album.id, startRefresh: startRefresh})"></app-add-song>
+            </ng-template>
+
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="card-body mt-1">
+          <div class="col-md-auto" *ngFor="let song of album.songs">
+            <div class="row mb-1 mt-1 justify-content-between">
+              <div class="col-md-6">
+                <p class="card-title">{{song.name}}</p>
+                <p class="card-text text-muted">{{song.publishedIn | date: 'short'}}</p>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <button (click)="helperService.openDialog(updateSongTemplate)" mat-raised-button color="accent">
+                    Update &nbsp;
+                  </button>
+                  <ng-template #updateSongTemplate>
+                    <app-edit-song [song]="song" [singer]="singer"
+                                   (change)="refreshContent(singer)"></app-edit-song>
+                  </ng-template>
+                  <button class="ml-2" (click)="helperService.openDialog(deleteSongTemplate)" mat-raised-button color="warn" >
+                    Delete &nbsp;
+                  </button>
+                  <ng-template #deleteSongTemplate>
+                    <app-delete-song [song]="song" [singer]="singer"
+                                     (change)="refreshContent(singer)"></app-delete-song>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="d-flex justify-content-between">
+            <button (click)="prepareSingerAlbumToUpdate(album);
+            helperService.openDialog(updateAlbumTemplate);" mat-raised-button
+                    color="accent" style="width: 100px">
+              Edit &nbsp;
+            </button>
+
+            <ng-template #updateAlbumTemplate>
+              <h2 mat-dialog-title>
+                Update Album: <span class="text-primary">{{album.name}}</span>
+              </h2>
+              <mat-dialog-content class="mat-typography" style="width: 400px; height: auto">
+                <form>
+                  <mat-form-field class="example-full-width">
+                    <mat-label>Name</mat-label>
+                    <input matInput placeholder="Name of Artist" type="text"
+                           [(ngModel)]="updateAlbumDto.name" name="name"
+                    >
+                  </mat-form-field>
+
+                  <button class="pull-left float-right" style="width: 120px;"
+                          (click)="updateSingerAlbum(album.id); helperService.hideDialog();"
+                          mat-raised-button color="primary" type="button">Update
+                  </button>
+                </form>
+              </mat-dialog-content>
+              <mat-dialog-actions align="end">
+                <button mat-raised-button color="warn" style="width: 120px;" (click)="helperService.hideDialog();" type="button">
+                  Close
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+
+
+            <button (click)="helperService.openDialog(deleteAlbumTemplate)" class="ml-2" mat-raised-button color="warn"
+                    style="width: 100px">
+              Delete &nbsp;
+            </button>
+            <ng-template #deleteAlbumTemplate>
+              <h2 mat-dialog-title>You're in deleting situation!</h2>
+              <mat-dialog-content class="mat-typography">
+                <p class="alert alert-danger">Are you sure that you want to delete this album?</p>
+
+              </mat-dialog-content>
+              <mat-dialog-actions align="end">
+                <button style="width: 120px;" mat-raised-button color="warn"
+                        (click)="deleteSingerAlbum(album.id); helperService.hideDialog();">
+                  Yes
+                </button>
+                <button style="width: 120px;" mat-raised-button color="primary" (click)="helperService.hideDialog();" class="ml-1"
+                        type="button">Close
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+            <button (click)="helperService.openDialog(warningTemplate)" class="ml-2" mat-raised-button color="warn"
+                    style="width: 100px">
+              Clear &nbsp;
+            </button>
+            <ng-template #warningTemplate>
+              <h2 mat-dialog-title>You're in deleting situation!</h2>
+              <mat-dialog-content class="mat-typography">
+                <p class="alert alert-danger">Are you sure that you want to clear this album?</p>
+
+              </mat-dialog-content>
+              <mat-dialog-actions align="end">
+                <button style="width: 120px;" mat-raised-button color="warn"
+                        (click)="clearAlbumContent(album.id); helperService.hideDialog();">
+                  Yes
+                </button>
+                <button style="width: 120px;" mat-raised-button color="primary" (click)="helperService.hideDialog();" class="ml-1"
+                        type="button">Close
+                </button>
+              </mat-dialog-actions>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

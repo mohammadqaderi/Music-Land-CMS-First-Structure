@@ -1,0 +1,114 @@
+<div class="panel-header panel-header-sm"></div>
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="large"
+  color="#934d4d"
+  type="ball-scale-multiple"
+>
+  <p style="font-size: 20px; color:white">{{state}}</p>
+</ngx-spinner>
+
+<div class="container m-2">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2 style="font-family: 'Anton', sans-serif">
+        Search For Music
+      </h2>
+    </div>
+
+    <div class="col-sm-4">
+      <mat-form-field>
+        <mat-label>
+          Search By Name
+        </mat-label>
+        <input type="text" name="searchTerm" placeholder="Search For Music"
+               matInput [(ngModel)]="searchTerm">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <h3 class="text-center" style="font-family: 'Anton', sans-serif">
+      Filter Musics By Your Choice
+    </h3>
+  </div>
+
+  <div class="container">
+    <form>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Music Type</mat-label>
+          <mat-select name="type" [(ngModel)]="musicFilter.type">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let type of musicData.musicType" [value]="type">
+              {{type}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Rate</mat-label>
+          <input type="number" name="rate" [(ngModel)]="musicFilter.rate"
+                 matInput>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <button (click)="getFilteredMusics()"
+                mat-raised-button color="warn" style="width: 120px">
+          Filter
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="row mb-2 mt-2" *ngIf="musics">
+    <div class="col-md-4 mb-1 mt-1" *ngFor="let music of musics | musicsFilter: searchTerm">
+      <nb-flip-card>
+        <nb-card-front>
+          <nb-card accent="danger">
+            <nb-card-body>
+              <h5 class="card-title">{{music.name}}</h5>
+              <p class="card-text">Exist On : {{music.tracks.length}} Playlists and Favorite Lists </p>
+              <p class="card-text">Belongs To : {{music.artist}} </p>
+              <p class="card-text text-muted">Published In : {{music.publishedIn | date: 'short'}} </p>
+              <p class="card-text">Rate Average {{music.rate}} </p>
+            </nb-card-body>
+          </nb-card>
+        </nb-card-front>
+
+        <nb-card-back>
+          <nb-card>
+            <nb-card-body>
+              <div class="d-flex justify-content-between">
+                <button (click)="helperService.openDialog(updateMusicTemplate)" nbButton status="primary" style="width: 120px">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                  Edit
+                </button>
+                <ng-template #updateMusicTemplate>
+                  <app-edit-music [music]="music" [musics]="musics"
+                                 (change)="refreshContent(musics)"></app-edit-music>
+                </ng-template>
+                <button (click)="helperService.openDialog(deleteMusicTemplate)"  nbButton status="primary" style="width: 120px">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                  Delete
+                </button>
+                <ng-template #deleteMusicTemplate>
+                  <app-delete-music [music]="music" [musics]="musics"
+                                   (change)="refreshContent(musics)"></app-delete-music>
+                </ng-template>
+              </div>
+            </nb-card-body>
+
+          </nb-card>
+        </nb-card-back>
+      </nb-flip-card>
+    </div>
+  </div>
+  <div class="row mb-1 justify-content-center">
+    <button (click)="getLimitedMusics()" mat-raised-button color="warn"
+            style="width: auto">Load More
+      <span *ngIf="showSpinner" class="spinner-border text-primary" role="status"></span></button>
+  </div>
+</div>

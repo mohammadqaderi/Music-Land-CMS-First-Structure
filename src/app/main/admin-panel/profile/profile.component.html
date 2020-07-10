@@ -1,0 +1,160 @@
+<div class="panel-header panel-header-sm"></div>
+
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#934d4d"
+  type="ball-scale-multiple"
+>
+  <p style="font-size: 20px; color: white">Uploading...</p>
+</ngx-spinner>
+
+<div class="main-content" *ngIf="profile">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Edit Profile</h5>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="col-md-5 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="firstName" [(ngModel)]=updateProfileData.firstName
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="lastName" [(ngModel)]=updateProfileData.lastName
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="number" class="form-control"
+                           name="age" [(ngModel)]=updateProfileData.age
+                    >
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="gender" [(ngModel)]=updateProfileData.gender
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="phone" [(ngModel)]=updateProfileData.phone
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="country" [(ngModel)]=updateProfileData.country
+                    >
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-5 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="city" [(ngModel)]=updateProfileData.city
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3 pr-1">
+                <div class="form-group">
+                  <label>
+                    <input type="text" class="form-control"
+                           name="address" [(ngModel)]=updateProfileData.address
+                    >
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                  <button class="btn btn-success" (click)="updateProfile()">
+                    Update Profile
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-4">
+      <div class="card card-user">
+        <div class="image">
+          <img src="../../../../assets/img/bg5.jpg" alt="...">
+        </div>
+        <div class="card-body">
+          <input style="display: none" ng2FileSelect [uploader]="uploader" type="file" (change)="onFileSelect($event)"
+                 #hiddenFileInput>
+          <div class="author">
+            <a (click)="hiddenFileInput.click()">
+              <img class="avatar border-gray" [src]="profile.image" alt="...">
+              <p *ngIf="selectedFile">You've selected : {{selectedFile}}</p>
+            </a>
+            <p class="mt-2">
+              <button *ngIf="selectedFile && getImage()" [disabled]="!getImage()" mat-raised-button color="accent"
+                      (click)="uploadingNewPicture()"
+              >
+                Upload
+              </button>
+            </p>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="row m-3 text-center p-2">
+            <h5 class="title">{{authService.username}}</h5>
+            <p class="description">
+              I'm The Admin Of This System
+            </p>
+          </div>
+        </div>
+        <hr>
+        <div class="button-container">
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-google-plus-g"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

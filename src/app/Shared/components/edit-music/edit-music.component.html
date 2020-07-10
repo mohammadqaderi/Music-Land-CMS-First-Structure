@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>
+  Update Music: <span class="text-primary">{{music.name}}</span>
+</h2>
+<mat-dialog-content class="mat-typography" style="width: 700px; height: auto">
+
+  <form [formGroup]="updateMusicDto" (ngSubmit)="updateMusic(); viewProgressBar = !viewProgressBar">
+    <mat-form-field class="example-full-width">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name of Music" type="text" formControlName="name"
+      >
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Description of Music" type="text" formControlName="description"
+      >
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Artist</mat-label>
+      <input matInput placeholder="Artist Name" type="text" formControlName="artist"
+      >
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Type</mat-label>
+      <mat-select  formControlName="type">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let type of musicData.musicType" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <div class="form-group">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="source" formControlName="source"
+               ng2FileSelect
+               [uploader]="uploader" (change)="onSourceSelect($event)">
+        <label class="custom-file-label" for="source">You have chosen: {{selectedMusic}}</label>
+      </div>
+    </div>
+
+    <button style="width: 120px;" mat-raised-button color="primary" type="submit">Update
+    </button>
+    <div class="row justify-content-center mt-1 mb-1" *ngIf="viewProgressBar">
+      <div class="col-md-10">
+        <p class="lead text-center">
+          Please Wait
+        </p>
+        <mat-progress-bar class="mt-1 mb-1" mode="indeterminate"></mat-progress-bar>
+      </div>
+    </div>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" style="width: 120px;" (click)="helperService.hideDialog()" type="button">
+    Close
+  </button>
+</mat-dialog-actions>

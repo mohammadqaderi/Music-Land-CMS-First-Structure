@@ -1,0 +1,14 @@
+.example-form {
+  min-width: 150px;
+  max-width: 350px;
+  width: 100%;
+}
+
+.scroll {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.example-full-width {
+  width: 100%;
+}

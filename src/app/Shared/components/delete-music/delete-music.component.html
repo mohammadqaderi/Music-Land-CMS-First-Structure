@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>You're in deleting situation!</h2>
+<mat-dialog-content class="mat-typography">
+  <p class="alert alert-danger">Are you sure that you want to delete this music?</p>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button style="width: 120px;" mat-raised-button color="warn"
+          (click)="deleteMusic(); helperService.hideDialog()">
+    Yes
+  </button>
+  <button style="width: 120px;" mat-raised-button color="primary" (click)="helperService.hideDialog()" class="ml-1"
+          type="button">Close
+  </button>
+</mat-dialog-actions>

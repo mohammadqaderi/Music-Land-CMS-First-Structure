@@ -1,0 +1,124 @@
+<div class="panel-header panel-header-sm"></div>
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="large"
+  color="#934d4d"
+  type="ball-scale-multiple"
+>
+  <p style="font-size: 20px; color:white">{{state}}</p>
+</ngx-spinner>
+
+<div class="container m-2">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2 style="font-family: 'Anton', sans-serif">
+        Search For Song
+      </h2>
+    </div>
+
+    <div class="col-sm-4">
+      <mat-form-field>
+        <mat-label>
+          Search By Name
+        </mat-label>
+        <input type="text" name="searchTerm" placeholder="Search For Song"
+               matInput [(ngModel)]="searchTerm">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <h3 class="text-center" style="font-family: 'Anton', sans-serif">
+      Filter Songs By Your Choice
+    </h3>
+  </div>
+
+  <div class="container">
+    <form>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Song Type</mat-label>
+          <mat-select name="type" [(ngModel)]="songFilter.type">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let type of songData.songTypes" [value]="type">
+              {{type}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Song Language</mat-label>
+          <mat-select name="language" [(ngModel)]="songFilter.language">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let language of songData.songLanguages" [value]="language">
+              {{language}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <mat-form-field>
+          <mat-label>Rate</mat-label>
+          <input type="number" name="rate" [(ngModel)]="songFilter.rate"
+                 matInput>
+        </mat-form-field>
+      </div>
+      <div class="row mb-1 justify-content-center">
+        <button (click)="getFilteredSongs()"
+                mat-raised-button color="warn" style="width: 120px">
+          Filter
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="row mb-2 mt-2" *ngIf="songs">
+    <div class="col-md-4 mb-1 mt-1" *ngFor="let song of songs | songsFilter: searchTerm">
+      <nb-flip-card>
+        <nb-card-front>
+          <nb-card accent="danger">
+            <nb-card-body>
+              <h5 class="card-title">{{song.name}}</h5>
+              <p class="card-text">Exist On : {{song.tracks.length}} Playlists and Favorite Lists </p>
+              <p class="card-text">Belongs To : {{song.artist}} </p>
+              <p class="card-text text-muted">Published In : {{song.publishedIn | date: 'short'}} </p>
+              <p class="card-text">Rate Average {{song.rate}} </p>
+            </nb-card-body>
+          </nb-card>
+        </nb-card-front>
+
+        <nb-card-back>
+          <nb-card>
+            <nb-card-body>
+              <div class="d-flex justify-content-between">
+                <button (click)="helperService.openDialog(updateSongTemplate)" nbButton status="primary" style="width: 120px">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                  Edit
+                </button>
+                <ng-template #updateSongTemplate>
+                  <app-edit-song [song]="song" [songs]="songs"
+                                 (change)="refreshContent(songs)"></app-edit-song>
+                </ng-template>
+                <button (click)="helperService.openDialog(deleteSongTemplate)"  nbButton status="primary" style="width: 120px">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                  Delete
+                </button>
+                <ng-template #deleteSongTemplate>
+                  <app-delete-song [song]="song" [songs]="songs"
+                                   (change)="refreshContent(songs)"></app-delete-song>
+                </ng-template>
+              </div>
+            </nb-card-body>
+
+          </nb-card>
+        </nb-card-back>
+      </nb-flip-card>
+    </div>
+  </div>
+  <div class="row mb-1 justify-content-center">
+    <button (click)="getLimitedSongs()" mat-raised-button color="warn"
+            style="width: auto">Load More
+      <span *ngIf="showSpinner" class="spinner-border text-primary" role="status"></span></button>
+  </div>
+</div>
