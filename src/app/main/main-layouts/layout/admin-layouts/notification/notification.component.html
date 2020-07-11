@@ -1,1 +1,35 @@
-<p>notification works!</p>
+<div class="panel-header panel-header-sm"></div>
+<div class="container m-2">
+  <div class="row m-1 justify-content-center">
+    <h2>Send Notification</h2>
+  </div>
+  <div class="row m-2 justify-content-center">
+    <div class="col-md-6">
+      <button nbButton status="basic" [disabled]="!!sub"
+              (click)="subscribeToNotifications()">Subscribe</button>
+    </div>
+  </div>
+
+  <div class="row m-1 justify-content-center">
+    <form>
+      <div class="col-md-5">
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input type="text" matInput name="title" [(ngModel)]="notificationPayloadDto.title"
+                 placeholder="Title">
+        </mat-form-field>
+      </div>
+      <div class="col-md-5">
+        <mat-form-field>
+          <mat-label>Body</mat-label>
+          <input type="text" matInput name="body" [(ngModel)]="notificationPayloadDto.body"
+                 placeholder="Body">
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <button nbButton status="primary"
+                (click)="sendNotification()">Send</button>
+      </div>
+    </form>
+  </div>
+</div>

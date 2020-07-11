@@ -12,6 +12,8 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TokenInterceptorService} from "./services/auth/token-interceptor.service";
 import {ErrorInterceptorService} from "./services/auth/error-interceptor.service";
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,10 @@ import {ErrorInterceptorService} from "./services/auth/error-interceptor.service
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ServiceWorkerModule.
+    register('../../node_modules/@angular/service-worker/ngsw-worker.js',
+      { enabled: environment.production }),
   ],
   providers: [
     {

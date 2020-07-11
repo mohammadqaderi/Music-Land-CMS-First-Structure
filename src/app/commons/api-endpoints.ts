@@ -62,5 +62,9 @@ export const ApiEndpoints = {
   },
   SingersAlbumsEndpoints: {
     allSingersAlbums: `${prefixRoute}/singers-albums`
-  }
+  },
+  vapidKeys: {
+    publicKey: 'publicKey',
+    privateKey: 'privateKey'
+  },
 };

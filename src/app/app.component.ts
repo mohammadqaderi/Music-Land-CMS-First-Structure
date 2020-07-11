@@ -11,12 +11,19 @@ import {SwUpdate} from "@angular/service-worker";
 export class AppComponent implements OnInit {
   constructor(private authService: AuthService, private swUpdate: SwUpdate) {
     if ('serviceWorker' in navigator) {
-      console.log('Service Worker is in navigator ');
-      navigator.serviceWorker.register('../../node_modules/@angular/service-worker/' +
-        'ngsw-worker.js').then(r => console.log('registered'));
+      console.log('serviceWorker enabled');
+      navigator.serviceWorker.register('../../node_modules/@angular/service-worker/ngsw-worker.js').then(r => console.log('registered'));
     }
-    if (swUpdate.isEnabled) {
-      console.log('Service Worker Enabled ');
+    if (this.swUpdate.isEnabled) {
+      console.log('serviceWorker enabled');
+      this.swUpdate.available.subscribe(() => {
+
+        if (confirm("New version available. Load New Version?")) {
+          window.location.reload();
+        }
+
+      });
+
     }
   }
 
